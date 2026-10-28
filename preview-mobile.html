@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zubi's • Interactive Mobile Phone View & Device Simulator</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1411;
+      --panel: rgba(26, 35, 28, 0.85);
+      --border: rgba(255, 255, 255, 0.12);
+      --forest: #284e2c;
+      --gold: #d6a348;
+      --cream: #f7f4ed;
+      --text: #f0f3eb;
+      --muted: #9aa796;
+      --phone-w: 390px;
+      --phone-h: 844px;
+      --scale: 1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at 50% 15%, #1d2a1f 0%, #0d120e 70%, #080b09 100%);
+      color: var(--text);
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    
+    /* Top Control Bar */
+    header.toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-title h1 {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-title span.badge {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: rgba(214, 163, 72, 0.2);
+      color: var(--gold);
+      padding: 3px 8px;
+      border-radius: 50px;
+      border: 1px solid rgba(214, 163, 72, 0.4);
+    }
+    
+    .controls-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .device-pills {
+      display: flex;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 3px;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+    }
+    .device-btn {
+      background: transparent;
+      border: 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .device-btn:hover { color: #fff; }
+    .device-btn.active {
+      background: var(--forest);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn-tool {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-tool:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    .btn-tool.gold {
+      background: var(--gold);
+      color: #1a221a;
+      border-color: transparent;
+    }
+    .btn-tool.gold:hover {
+      background: #e5b358;
+    }
+    
+    /* Stage Area */
+    main.stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 16px 50px;
+      position: relative;
+    }
+    .specs-info {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .specs-info strong {
+      color: #fff;
+    }
+    
+    /* Smartphone Device Frame */
+    .phone-wrapper {
+      position: relative;
+      transform-origin: top center;
+      transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+    }
+    .phone-chassis {
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border-radius: 52px;
+      background: #181c19;
+      padding: 12px;
+      box-shadow: 
+        0 0 0 4px #2b332c,
+        0 0 0 6px #101511,
+        0 25px 60px rgba(0, 0, 0, 0.7),
+        0 10px 20px rgba(0, 0, 0, 0.4);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: width 0.3s ease, height 0.3s ease;
+    }
+    
+    /* Dynamic Island */
+    .dynamic-island {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 108px;
+      height: 28px;
+      background: #000;
+      border-radius: 50px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      pointer-events: none;
+    }
+    .island-camera {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #0c1822;
+      box-shadow: inset 0 0 2px #1f4260;
+    }
+    .island-sensor {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #0c1015;
+    }
+    
+    /* Status Bar */
+    .status-bar {
+      position: absolute;
+      top: 14px;
+      left: 28px;
+      right: 28px;
+      height: 22px;
+      z-index: 39;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #202821;
+      pointer-events: none;
+    }
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+    }
+    
+    /* Phone Screen & Iframe */
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 40px;
+      overflow: hidden;
+      background: #f7f4ed;
+      position: relative;
+      box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.4);
+      padding-top: 44px;
+    }
+    iframe.phone-viewport {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #f7f4ed;
+    }
+    
+    /* Home Indicator Swipe Bar */
+    .home-indicator {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 130px;
+      height: 5px;
+      border-radius: 50px;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 40;
+      pointer-events: none;
+      backdrop-filter: blur(4px);
+    }
+    
+    /* Bottom Navigation / Quick Test Dock */
+    .quick-dock {
+      margin-top: 25px;
+      background: var(--panel);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      padding: 10px 18px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .quick-dock span {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-right: 4px;
+    }
+    .dock-btn {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .dock-btn:hover {
+      background: var(--forest);
+      border-color: var(--forest);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="toolbar">
+    <div class="brand-title">
+      <a href="/" style="text-decoration:none;">
+        <h1>Zubi's Mobile View</h1>
+      </a>
+      <span class="badge">Live Responsive Simulator</span>
+    </div>
+
+    <div class="controls-group">
+      <div class="device-pills">
+        <button class="device-btn active" data-w="390" data-h="844" data-name="iPhone 14 / 15 (390×844)">iPhone 14/15</button>
+        <button class="device-btn" data-w="393" data-h="852" data-name="iPhone 15 Pro (393×852)">15 Pro</button>
+        <button class="device-btn" data-w="412" data-h="915" data-name="Google Pixel 8 / Galaxy S24 (412×915)">Pixel / Galaxy</button>
+        <button class="device-btn" data-w="375" data-h="667" data-name="iPhone SE (375×667)">iPhone SE</button>
+      </div>
+
+      <button class="btn-tool" id="rotate-btn" title="Rotate orientation">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        Rotate
+      </button>
+
+      <button class="btn-tool" id="reload-btn" title="Reload iframe">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        Reload
+      </button>
+
+      <a class="btn-tool gold" href="/" target="_blank" rel="noopener">
+        Open Direct URL ↗
+      </a>
+    </div>
+  </header>
+
+  <main class="stage">
+    <div class="specs-info">
+      Viewport: <strong id="spec-name">iPhone 14 / 15 (390×844)</strong>
+      <span>•</span>
+      Touch Mode: <strong>Enabled</strong>
+      <span>•</span>
+      Status: <strong style="color: #6ed687;">Ready</strong>
+    </div>
+
+    <div class="phone-wrapper" id="phone-wrapper">
+      <div class="phone-chassis" id="phone-chassis">
+        
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span id="current-time">9:41</span>
+          <div class="status-icons">
+            <span>5G</span>
+            <span>􀙇</span>
+            <span>100%</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Island -->
+        <div class="dynamic-island">
+          <div class="island-sensor"></div>
+          <div class="island-camera"></div>
+        </div>
+
+        <!-- Screen & Embedded Website -->
+        <div class="phone-screen">
+          <iframe id="store-frame" class="phone-viewport" src="/" title="Zubi's Mobile Storefront"></iframe>
+        </div>
+
+        <!-- iOS Home Swipe Bar -->
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+
+    <!-- Quick Test Bar -->
+    <div class="quick-dock">
+      <span>Jump Inside App:</span>
+      <button class="dock-btn" onclick="sendToFrame('#shop')">Shop Pantry</button>
+      <button class="dock-btn" onclick="triggerBag()">Open Bag</button>
+      <button class="dock-btn" onclick="sendToFrame('#story')">Our Story</button>
+      <button class="dock-btn" onclick="sendToFrame('#faq')">FAQ</button>
+      <button class="dock-btn" onclick="sendToFrame('#contact')">Contact</button>
+    </div>
+  </main>
+
+  <script>
+    // Live Clock in status bar
+    function updateClock(){
+      const d = new Date();
+      let h = d.getHours(), m = d.getMinutes();
+      document.querySelector('#current-time').textContent = `${h}:${m < 10 ? '0'+m : m}`;
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+
+    const chassis = document.querySelector('#phone-chassis');
+    const specName = document.querySelector('#spec-name');
+    let isLandscape = false;
+    let currentW = 390;
+    let currentH = 844;
+
+    function applyDimensions(){
+      const w = isLandscape ? currentH : currentW;
+      const h = isLandscape ? currentW : currentH;
+      chassis.style.width = w + 'px';
+      chassis.style.height = h + 'px';
+      specName.textContent = `${specName.getAttribute('data-base') || 'Mobile'} (${w}×${h}${isLandscape ? ' Landscape' : ''})`;
+    }
+
+    document.querySelectorAll('.device-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentW = Number(btn.dataset.w);
+        currentH = Number(btn.dataset.h);
+        specName.setAttribute('data-base', btn.dataset.name.split(' (')[0]);
+        applyDimensions();
+      });
+    });
+
+    document.querySelector('#rotate-btn').addEventListener('click', () => {
+      isLandscape = !isLandscape;
+      applyDimensions();
+    });
+
+    document.querySelector('#reload-btn').addEventListener('click', () => {
+      const frame = document.querySelector('#store-frame');
+      frame.src = frame.src;
+    });
+
+    function sendToFrame(hash){
+      const frame = document.querySelector('#store-frame');
+      frame.contentWindow.location.hash = hash;
+    }
+
+    function triggerBag(){
+      const frame = document.querySelector('#store-frame');
+      try {
+        const doc = frame.contentDocument || frame.contentWindow.document;
+        doc.querySelector('.cart-button')?.click();
+      } catch(e) {
+        sendToFrame('#shop');
+      }
+    }
+  </script>
+</body>
+</html>

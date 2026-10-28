@@ -1,0 +1,17 @@
+.brand{display:inline-flex;align-items:center;width:150px;line-height:1}.brand img{display:block;width:100%;height:auto;mix-blend-mode:multiply}.footer-brand{width:185px;filter:brightness(0) invert(1)}
+@media(max-width:680px){.brand{width:122px}}
+
+.footer-bottom{align-items:center}.footer-bottom>div{align-items:center}.footer-bottom a,.footer-bottom button{display:inline-flex;align-items:center;height:24px;white-space:nowrap}
+@media(max-width:680px){.footer-bottom>div{display:flex;align-items:center;gap:8px 16px}.footer-bottom a,.footer-bottom button{height:22px}}
+
+/* Category photography with product-focused framing; shared overlay keeps text readable. */
+.card-masala{background:url('https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=900&q=80') center/cover}
+.card-pickle{background:url('log_f1-2.jpg') 50% 80%/auto 145% no-repeat}
+.card-cookie{background:url('cookies.jpg.jpeg') 50% 100%/auto 145% no-repeat}
+
+/* Keep product labels centred within their illustrated pack. */
+.product-image:after{left:50%;top:114px;width:108px;white-space:pre-line;transform:translateX(-50%) rotate(var(--tilt,-4deg))}
+
+.checkout-order{flex-wrap:wrap;gap:4px}.checkout-order small{width:100%;color:var(--muted);font-size:10px;font-weight:500;line-height:1.45}.confirm-dialog .eyebrow{margin-bottom:13px}.confirm-dialog p strong{color:var(--forest)}
+
+@media(max-width:680px){.card-pickle{background-size:cover;background-position:50% 74%}.card-cookie{background-size:cover;background-position:50% 100%}}
