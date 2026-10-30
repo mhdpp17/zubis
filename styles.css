@@ -50,10 +50,10 @@
   .section{padding:54px 6vw}
   .section-heading{margin-bottom:26px}
   .desktop-link{display:none}
-  .shop-tools{grid-template-columns:1fr 125px;gap:10px;margin-bottom:24px}
+  .shop-tools{grid-template-columns:1fr auto;gap:10px;margin-bottom:24px}
   .search-field{height:44px;border-radius:8px;padding:0 12px}
   .search-field input{font-size:16px}
-  #sort-products{font-size:12px;height:44px;padding:0 4px}
+  #sort-products{font-size:11px;height:44px;padding:0 10px;border:1px solid var(--forest);border-radius:50px;background:var(--white);white-space:nowrap;min-width:0;max-width:100%}
   .filters{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;padding:4px 0 6px}
   .filters::-webkit-scrollbar{display:none}
   .filter{flex-shrink:0;padding:8px 15px;font-size:11.5px;font-weight:700;border-radius:50px;white-space:nowrap;min-height:38px;display:inline-flex;align-items:center}
@@ -106,10 +106,11 @@
   .quantity span{min-width:28px;height:30px;display:inline-flex;align-items:center;justify-content:center;text-align:center;font-size:12px;font-weight:800;line-height:1;border-left:1px solid rgba(40,78,44,.08);border-right:1px solid rgba(40,78,44,.08)}
   .remove-item{width:28px;height:28px;border:0;background:transparent;color:var(--muted);font-size:20px;line-height:1;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;align-self:flex-start;margin-top:-2px;padding:0}
   .cart-summary{padding-bottom:max(10px,env(safe-area-inset-bottom,0px))}
+  .cart-summary>div{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px}
   .cart-summary>div>span{font-size:12px}
   .cart-summary strong.cart-total{font-size:20px}
-  .cart-summary p{font-size:10.5px;padding:7px 10px;margin-bottom:12px}
-  .cart-summary p strong{font-size:10.5px}
+  .cart-summary p{font-size:10.5px;padding:7px 10px;margin-bottom:12px;word-break:break-word}
+  .cart-summary p strong{font-size:10.5px;display:block;margin-bottom:2px}
   .cart-summary p small{font-size:9.5px}
   .cart-empty p{font-size:12.5px;margin-bottom:12px}
   .cart-empty .text-link{font-size:10.5px;padding:8px 16px}
